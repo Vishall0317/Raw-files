@@ -1,0 +1,165 @@
+transactions
+
+[
+    {
+        "transactionId": 6,
+        "transactionNumber": "tx123",
+        "amount": 2340.0,
+        "transactionType": "debit",
+        "accountId": 2,
+        "transactiondate": "12/12/2021"
+    },
+    {
+        "transactionId": 13,
+        "transactionNumber": "tx223",
+        "amount": 2240.0,
+        "transactionType": "credit",
+        "accountId": 10,
+        "transactiondate": "13/12/2021"
+    }
+]
+
+
+customers
+
+[
+    {
+        "customerId": 1,
+        "customerName": "vishal",
+        "phoneNo": "98098789878",
+        "address": "thane"
+    },
+    {
+        "customerId": 7,
+        "customerName": "Raaja",
+        "phoneNo": "9809876756",
+        "address": "Akola"
+    },
+    {
+        "customerId": 8,
+        "customerName": "Raani",
+        "phoneNo": "8809876756",
+        "address": "Nashik"
+    },
+    {
+        "customerId": 9,
+        "customerName": "Pasha",
+        "phoneNo": "7809876756",
+        "address": "Nagpur"
+    }
+]
+
+
+accounts
+
+[
+    {
+        "accountId": 2,
+        "accountNumber": 12345,
+        "balance": 20000.0,
+        "customerId": 1,
+        "accountType": "SA"
+    },
+    {
+        "accountId": 10,
+        "accountNumber": 23435,
+        "balance": 21000.0,
+        "customerId": 7,
+        "accountType": "CA"
+    },
+    {
+        "accountId": 11,
+        "accountNumber": 63435,
+        "balance": 19000.0,
+        "customerId": 8,
+        "accountType": "SA"
+    },
+    {
+        "accountId": 12,
+        "accountNumber": 63888,
+        "balance": 20000.0,
+        "customerId": 9,
+        "accountType": "CA"
+    }
+]
+
+
+Endpoints:
+
+ 
+
+User should be able to open Savings/ Current/ Laon account by giving information like Name, phone No, email Id, account type,
+And initial deposit
+
+User should be able to see his/her personal and account details
+User should be able to update his/her personal details
+User should be able to transfer fund from one account to another account.
+User should be able to see his/her last transactions by month
+ 
+
+For above APIs
+
+ 
+
+  Add all necessary validations
+
+  Handle Validation and Business Exceptions
+
+  Add Loggers and comments
+
+  Transaction management
+
+  Java 8 features need to used where ever possible
+
+  Unit testing for both Controller and Service classes
+
+
+
+[14:48] Ranjitha R
+<!-- https://mvnrepository.com/artifact/org.powermock/powermock-api-mockito2 -->
+<dependency>
+<groupId>org.powermock</groupId>
+<artifactId>powermock-api-mockito2</artifactId>
+<version>2.0.9</version>
+<scope>test</scope>
+</dependency>
+Maven Repository: org.powermock » powermock-api-mockito2
+
+[14:50] Ranjitha R
+<!-- https://mvnrepository.com/artifact/org.powermock/powermock-module-junit4 -->
+<dependency>
+<groupId>org.powermock</groupId>
+<artifactId>powermock-module-junit4</artifactId>
+<version>2.0.9</version>
+<scope>test</scope>
+</dependency>
+Maven Repository: org.powermock » powermock-module-junit4
+
+[14:50] Ranjitha R
+use these dependencies for powermockito
+ like 2
+
+@GetMapping("/transactions/date")
+	public ResponseEntity<List<TransactionResponseProj>> getTransactionsByDate(
+			@RequestParam("fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
+			@RequestParam("toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate) {
+		return new ResponseEntity<List<TransactionResponseProj>>(
+				transactionService.getTransactionsByDate(fromDate, toDate), HttpStatus.ACCEPTED);
+	}
+
+List<TransactionResponseProj> findByDateBetween(LocalDateTime fromDate, LocalDateTime ToDate);
+
+
+List<TransactionResponseProj> getTransactionsByDate(LocalDateTime fromDate, LocalDateTime toDate);
+
+
+@Override
+	public List<TransactionResponseProj> getTransactionsByDate(LocalDateTime fromDate, LocalDateTime toDate) {
+		if (fromDate.isAfter(toDate))
+			throw new MyCustomizeedException("from date and to date are wrong");
+		List<TransactionResponseProj> transactionResponseProjList = transactionRepository.findByDateBetween(fromDate,
+				toDate);
+		if (transactionResponseProjList.isEmpty())
+			throw new MyCustomizeedException("No transaction for the given dates");
+		return transactionResponseProjList;
+	}
